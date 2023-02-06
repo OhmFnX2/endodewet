@@ -1,4 +1,10 @@
+using System;
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
 using Godot;
+using System.Text;
+using File = System.IO.File;
 
 public class Input : TextEdit
 {
@@ -6,7 +12,7 @@ public class Input : TextEdit
     // private int a = 2;
     // private string b = "text";
     private FileDialog fileDialogLoad;
-    public byte[] GetDataByte;
+    public byte[] GetDataByte = {};
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -24,12 +30,9 @@ public class Input : TextEdit
     private void _on_FileDialog_file_selected(string path)
     {
         Text = "";
-        var file = new File();
-        file.Open(path, File.ModeFlags.Read);
-        var content = file.GetAsText();
-        file.Close();
-        Text = content;
-        GetDataByte = content.ToUTF8();
+        var content = File.ReadAllBytes(path);
+        Text = Encoding.UTF8.GetString(content);
+        GetDataByte = content;
     }
 
     private void _on_TextEdit_text_changed()

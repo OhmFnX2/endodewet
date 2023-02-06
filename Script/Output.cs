@@ -14,7 +14,7 @@ public class Output : TextEdit
     private FileDialog fileDialogLoad;
     private TextEdit input;
     private LineEdit key;
-    private byte[] GetOutByte; 
+    private byte[] GetOutByte = {}; 
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -48,7 +48,7 @@ public class Output : TextEdit
 
         using (var streamWriter = new StreamWriter(cryptoStream))
         {
-            streamWriter.Write(Encoding.Default.GetString(input.Get("GetDataByte") as byte[]));
+            streamWriter.Write(Encoding.UTF8.GetString(input.Get("GetDataByte") as byte[]));
         }
 
         var iv = aes.IV;
@@ -59,14 +59,15 @@ public class Output : TextEdit
         Buffer.BlockCopy(bytes, 0, result, iv.Length, bytes.Length);
         
         GetOutByte = result;
-        Text = Convert.ToBase64String(result);
+        
+        Text = Encoding.UTF8.GetString(result);
     }
     
     private static byte[] CreateMd5Hash(string input)
     {
         var md5 = MD5.Create();
 
-        var inputBytes = Encoding.ASCII.GetBytes(input);
+        var inputBytes = Encoding.UTF8.GetBytes(input);
         var hashBytes = md5.ComputeHash(inputBytes);
         var sb = new StringBuilder();
 
@@ -83,12 +84,12 @@ public class Output : TextEdit
     private void _on_Button3_pressed()
     {       
         var key1 = CreateMd5Hash(key.Text);
-        var fullCipher = Convert.FromBase64String(Encoding.Default.GetString(input.Get("GetDataByte") as byte[]));
-        var iv = new byte[16];
-        var cipher = new byte[fullCipher.Length - iv.Length];
-        int? keySize = null;
         try
         {
+            var fullCipher = input.Get("GetDataByte") as byte[];
+            var iv = new byte[16];
+            var cipher = new byte[fullCipher.Length - iv.Length];
+            int? keySize = null;
             Buffer.BlockCopy(fullCipher, 0, iv, 0, iv.Length);
             Buffer.BlockCopy(fullCipher, iv.Length, cipher, 0, fullCipher.Length - iv.Length);
 

@@ -10,14 +10,17 @@ config_version=4
 
 [application]
 
-config/name="wat"
+config/name="WetEnDeCry"
 run/main_scene="res://Menu.tscn"
+boot_splash/image="res://icon.png"
 config/icon="res://icon.png"
+config/windows_native_icon="res://icon.ico"
 
 [display]
 
 window/stretch/mode="2d"
 window/stretch/aspect="expand"
+window/icon="res://icon.png"
 
 [gui]
 
