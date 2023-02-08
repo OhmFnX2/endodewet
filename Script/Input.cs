@@ -12,12 +12,14 @@ public class Input : TextEdit
     // private int a = 2;
     // private string b = "text";
     private FileDialog fileDialogLoad;
-    public byte[] GetDataByte = {};
+    public string GetDataByte = "";
+    
+    byte a = 255;
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
-        GetDataByte = Text.ToUTF8();
+        GetDataByte = Text;
         fileDialogLoad = GetNode<FileDialog>("/root/Control/Panel/FileDialog");
     }
 
@@ -37,7 +39,8 @@ public class Input : TextEdit
 
     private void _on_TextEdit_text_changed()
     {
-        GetDataByte = Text.ToUTF8();
+        BitConverter.GetBytes();
+        GetDataByte = Text;
     }
 
 //  // Called every frame. 'delta' is the elapsed time since the previous frame.

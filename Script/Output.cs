@@ -14,7 +14,7 @@ public class Output : TextEdit
     private FileDialog fileDialogLoad;
     private TextEdit input;
     private LineEdit key;
-    private byte[] GetOutByte = {}; 
+    private byte[] GetOutByte = {};
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()
@@ -48,7 +48,7 @@ public class Output : TextEdit
 
         using (var streamWriter = new StreamWriter(cryptoStream))
         {
-            streamWriter.Write(Encoding.UTF8.GetString(input.Get("GetDataByte") as byte[]));
+            streamWriter.Write(input.Get("GetDataByte"));
         }
 
         var iv = aes.IV;
@@ -60,14 +60,15 @@ public class Output : TextEdit
         
         GetOutByte = result;
         
-        Text = Encoding.UTF8.GetString(result);
+        Text = "!!!Export File Only!!!";
+        
     }
     
     private static byte[] CreateMd5Hash(string input)
     {
         var md5 = MD5.Create();
 
-        var inputBytes = Encoding.UTF8.GetBytes(input);
+        var inputBytes = Encoding.BigEndianUnicode.GetBytes(input);
         var hashBytes = md5.ComputeHash(inputBytes);
         var sb = new StringBuilder();
 
@@ -82,11 +83,11 @@ public class Output : TextEdit
     }
 
     private void _on_Button3_pressed()
-    {       
+    {
         var key1 = CreateMd5Hash(key.Text);
         try
         {
-            var fullCipher = input.Get("GetDataByte") as byte[];
+            byte[] fullCipher = Encoding.UTF8.GetBytes(input.Get("GetDataByte") as string);
             var iv = new byte[16];
             var cipher = new byte[fullCipher.Length - iv.Length];
             int? keySize = null;
@@ -118,7 +119,8 @@ public class Output : TextEdit
             }
 
             GetOutByte = result.ToUTF8();
-            Text = result;
+            Text = Encoding.UTF8.GetString(GetOutByte);
+            
         }
         catch (Exception _)
         {
@@ -128,7 +130,7 @@ public class Output : TextEdit
     }
 
     private void _on_FileDialog_file_selected(string path)
-    {
+    { 
         var file = new Godot.File();
         file.Open(path, Godot.File.ModeFlags.Write);
         file.StoreBuffer(GetOutByte);
